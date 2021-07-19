@@ -11,24 +11,55 @@ import Vue from 'vue'
 Vue.directive('real-img', {
     inserted(el, { value }){
         let displayHandler = displayBackground;
+        
         if(el.tagName.toLowerCase() === 'img'){
             displayHandler = displayImage;
         }
 
-        setTimeout(()=>{
+        whenImgLoad(el).then(src=>{
+            console.log("图片已加载", src);
             loadImage(value).then(()=>{
                 displayHandler(el, value);
             });
-        }, 200);
+        })     
     }
 });
 
+function getImgSrc(el){
+    if(el.tagName.toLowerCase() === 'img'){
+        return el.src;
+    }else{
+        let bg = window.getComputedStyle(el).backgroundImage;
+        if(bg !== "none"){
+            return bg.replace(/url\("(.*)"\)/, "$1");
+        }
+    }
+    return "";
+}
+
+function whenImgLoad(el){
+    return new Promise(resolve=>{
+        const src = getImgSrc(el);
+        if(src){
+            let img = new Image();
+            img.onload = function(){
+                resolve(src);
+                img = null;
+            }
+            img.src = src;
+        }else{
+            setTimeout(()=>{
+                resolve();
+            }, 1000);
+        }
+    });
+}
+
 function loadImage(src){
     return new Promise(resolve=>{
-        let $img = document.createElement('img');
+        let $img = new Image();
         $img.onload = function(){
             resolve(src);
-            $img.remove();
             $img = null;
         }
         $img.src = src;
