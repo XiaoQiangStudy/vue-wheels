@@ -1,4 +1,7 @@
 # vue_wheels
+关于 Vue2 的，自己写的，小轮子合集。
+尽在 src 中。
+
 
 ## Project setup
 ```

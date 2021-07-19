@@ -40,6 +40,5 @@ function displayBackground(el, url){
 }
 
 function displayImage(el, url){
-    console.log('displayImage', url, el)
     el.src = url;
 }
