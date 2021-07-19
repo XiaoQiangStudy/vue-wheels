@@ -16,10 +16,12 @@ Vue.directive('real-img', {
             displayHandler = displayImage;
         }
 
-        whenImgLoad(el).then(src=>{
-            console.log("图片已加载", src);
-            loadImage(value).then(()=>{
-                displayHandler(el, value);
+        const oldSrc = getImgSrc(el);
+        const newSrc = value;
+
+        whenImgLoad(oldSrc).then(()=>{
+            whenImgLoad(newSrc).then(()=>{
+                displayHandler(el, newSrc);
             });
         })     
     }
@@ -37,9 +39,8 @@ function getImgSrc(el){
     return "";
 }
 
-function whenImgLoad(el){
+function whenImgLoad(src){
     return new Promise(resolve=>{
-        const src = getImgSrc(el);
         if(src){
             let img = new Image();
             img.onload = function(){
@@ -52,17 +53,6 @@ function whenImgLoad(el){
                 resolve();
             }, 1000);
         }
-    });
-}
-
-function loadImage(src){
-    return new Promise(resolve=>{
-        let $img = new Image();
-        $img.onload = function(){
-            resolve(src);
-            $img = null;
-        }
-        $img.src = src;
     });
 }
 
