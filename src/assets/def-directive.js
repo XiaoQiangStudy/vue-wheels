@@ -1,1 +1,1 @@
-import '../directive/v-real-img.js'
+import '../wheels/directive/v-real-img.js'
